@@ -1,34 +1,20 @@
 const express = require('express');
 const twitter = require('twitter');
+const axios = require('axios');
 const config = require('./config/twitter');
-const cp = require('child_process');
 const client = new twitter(config);
+const bodyParser = require('body-parser');
 
 const app = express();
-let count = 0;
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 const params = {
   language: 'en',
-  track: 'javascript,node,express,python'
+  track: ''
 };
 
-let stream = client.stream('statuses/filter', params);
-
-stream.on('data', tweet => {
-  if (count < 15) {
-    const child = cp.fork('./process');
-    count++;
-    child.send(tweet);
-    child.on('exit', () => {
-      count--;
-      console.log(count);
-    });
-  }
-});
-
-stream.on('error', err => {
-  console.log(err);
-});
+let stream;
 
 app.get('/stop', (req, res) => {
   stream.destroy();
@@ -36,9 +22,19 @@ app.get('/stop', (req, res) => {
   res.sendStatus(200);
 });
 
-app.get('/start', (req, res) => {
+app.post('/start', (req, res) => {
+  params.track = req.body.words;
+  console.log(params.track);
   stream = client.stream('statuses/filter', params);
-  console.log('Started');
+
+  stream.on('data', tweet => {
+    axios.post('http://localhost:3001/tweet', tweet);
+  });
+
+  stream.on('error', err => {
+    console.log(err);
+  });
+
   res.sendStatus(200);
 });
 
