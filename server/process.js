@@ -1,6 +1,7 @@
 const analyzer = require('natural').SentimentAnalyzer;
 const stemmer = require('natural').PorterStemmer;
 const Tweet = require('./models/tweet');
+const Query = require('./models/query');
 const mongoose = require('mongoose');
 const db = require('./config/mlab').mongoURI;
 
@@ -26,23 +27,28 @@ process.on('message', tweet => {
         }
 
         let sentiment = analyze.getSentiment(text.trim().split(' '));
+        Query.findById(tweet.queryId)
+          .then(query => {
+            query.sentiments.push(sentiment);
+            query.save().then(() => {
+              const newTweet = new Tweet({
+                text,
+                sentiment
+              });
 
-        const newTweet = new Tweet({
-          text,
-          sentiment
-        });
-
-        newTweet
-          .save()
-          .then(() => {
-            process.exit();
+              newTweet
+                .save()
+                .then(() => {
+                  process.exit();
+                })
+                .catch(err => {
+                  console.log('error saving');
+                  process.exit();
+                });
+            });
           })
-          .catch(err => {
-            console.log('error saving');
-            process.exit();
-          });
+          .catch(err => console.log(err));
       } else {
-        console.log('got ehre 2');
         process.exit();
       }
     })

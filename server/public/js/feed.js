@@ -1,35 +1,41 @@
-let lastSeen;
+let id = '';
 
 const submitQuery = () => {
   const words = $('#words').val();
-  console.log(words);
-  $.post('/', { words, lastSeen })
+  $.post('/', { words })
     .then(res => {
-      lastSeen = new Date();
-      //setTimeout(getUpdates, 10000);
+      id = res;
+      setTimeout(getStatus, 2000);
     })
-    .catch(err => {
-      $('#tweetContainer').prepend('<p>Failed to submit query.</p>');
-    });
+    .catch(err => console.log(err));
 };
 
-const getUpdates = () => {
+const getStatus = () => {
   const words = $('#words').val();
-  $.post('/', { words, lastSeen })
+  $.get('/status', { id })
     .then(res => {
-      lastSeen = new Date();
-      setTimeout(getUpdates, 10000);
+      console.log(res);
+      const sentiment =
+        res.sentiments.reduce((p, c) => p + c, 0) / res.sentiments.length;
+      if (res.sentiment < -0.5) {
+        $(':button').prop('disabled', true);
+        $('#red').prop('disabled', false);
+      } else if (sentiment > -0.5 && sentiment < 0) {
+        $(':button').prop('disabled', true);
+        $('#yellow').prop('disabled', false);
+      } else if (sentiment > 0 && sentiment < 0.5) {
+        $(':button').prop('disabled', true);
+        $('#blue').prop('disabled', false);
+      } else if (sentiment > 0.5) {
+        $(':button').prop('disabled', true);
+        $('#blue').prop('disabled', false);
+      }
+      $('#results').html(`Tweets Analyzed: ${res.sentiments.length}`);
+      setTimeout(getStatus, 2000);
     })
     .catch(err => {
-      $('#tweetContainer').prepend('<p>Failed to retrieve tweets.</p>');
+      setTimeout(getStatus, 2000);
+      console.log(err);
+      console.log('Failed to get status');
     });
-  // $.get('/words', { lastSeen })
-  //   .then(data => {
-  //     // data.forEach(tweet => {
-  //     //   let output = `<p class="small">${tweet.text}</p>`;
-  //     //   $('#tweetContainer').prepend(output);
-  //     // });
-  //     lastSeen = new Date();
-  //     setTimeout(getUpdates, 3000);
-  //   })
 };

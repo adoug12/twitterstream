@@ -1,9 +1,10 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const twitter = require('twitter');
 const axios = require('axios');
 const config = require('./config/twitter');
+
 const client = new twitter(config);
-const bodyParser = require('body-parser');
 
 const app = express();
 app.use(bodyParser.json());
@@ -28,6 +29,7 @@ app.post('/start', (req, res) => {
   stream = client.stream('statuses/filter', params);
   console.log('Started streaming:', params.track);
   stream.on('data', tweet => {
+    tweet.queryId = req.body.queryId;
     axios
       .post('http://13.75.193.101:3000/tweet', tweet)
       .then(res => console.log(res.status))

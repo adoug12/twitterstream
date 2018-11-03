@@ -2,21 +2,24 @@ doctype html
 html
   head
     meta(charset='utf-8')
-    title Twitter Feed
+    meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
+    title Twitter Sentiment
     link(rel='stylesheet', href='css/bootstrap.min.css')
     link(rel='stylesheet', href='css/styles.css')
     body
-      .container
-        nav.navbar.navbar-light.bg-light
-          span.navbar-brand Twitter Sentiment
-        .row
-          .col-6
-            form#queryForm(action='javascript:submitQuery()', method='post')
-              .input-group
-                .input-group-prepend
-                  button.btn.btn-sm.btn-primary(type='submit') Submit
-                input.form-control.form-control-sm#words(type='text', name='words', placeholder='Enter your words...')
-            .tweet-feed#tweetContainer
-          .col-6#statsContainer
+      .site-wrapper
+        .site-wrapper-inner
+          .cover-container
+            .inner.cover
+              h1.cover-heading Twitter Sentiment
+              p.lead Enter the hashtags you with to analyze.
+              form#queryForm(action='javascript:submitQuery()', method='post')
+                input.form-control.mb-4#words(type='text', name='words')
+                button.btn.btn-primary.mb-4(type='submit') Submit
+                p.lead#results Tweets Analyzed: 0
+                button.btn.btn-danger#red(disabled)
+                button.btn.btn-warning#yellow(disabled)
+                button.btn.btn-primary#blue(disabled)
+                button.btn.btn-success#green(disabled)
   script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js')
   script(src='js/feed.js')
