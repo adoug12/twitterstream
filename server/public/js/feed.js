@@ -14,7 +14,6 @@ const getStatus = () => {
   const words = $('#words').val();
   $.get('/status', { id })
     .then(res => {
-      console.log(res);
       const sentiment =
         res.sentiments.reduce((p, c) => p + c, 0) / res.sentiments.length;
       if (res.sentiment < -0.5) {
