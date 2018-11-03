@@ -29,7 +29,7 @@ app.post('/start', (req, res) => {
   console.log('Started streaming:', params.track);
   stream.on('data', tweet => {
     axios
-      .post('http://localhost:3001/tweet', tweet)
+      .post('http://13.75.193.101:3000/tweet', tweet)
       .then(res => console.log(res.status))
       .catch(err => console.log('Failed to post tweet.'));
   });

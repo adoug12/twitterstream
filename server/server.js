@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
 
 app.post('/', (req, res) => {
   axios
-    .post('http://localhost:3000/start', req.body)
+    .post('http://13.75.209.231:3000/start', req.body)
     .then(data => {
       res.sendStatus(200);
     })
@@ -51,4 +51,4 @@ app.get('/healthcheck', (req, res) => {
   }
 });
 
-app.listen(3001, () => console.log('Server running on port 3001'));
+app.listen(3000, () => console.log('Server running on port 3000'));
