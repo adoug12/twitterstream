@@ -39,7 +39,7 @@ app.post('/', (req, res) => {
   newQuery.save().then(query => {
     req.body.queryId = query._id;
     axios
-      .post('http://23.101.211.229:3000/start', req.body)
+      .post('http://52.187.255.92:3000/start', req.body)
       .then(data => {
         res.json(query._id);
       })
