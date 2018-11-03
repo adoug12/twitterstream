@@ -3,12 +3,13 @@ const twitter = require('twitter');
 const config = require('./config/twitter');
 const mongoose = require('mongoose');
 const db = require('./config/mlab').mongoURI;
+const cp = require('child_process');
 const analyzer = require('natural').SentimentAnalyzer;
 const stemmer = require('natural').PorterStemmer;
 const Tweet = require('./models/tweet');
 
-const client = new twitter(config);
 const analyze = new analyzer('English', stemmer, 'afinn');
+const client = new twitter(config);
 
 const app = express();
 
@@ -28,24 +29,11 @@ const params = {
 let stream = client.stream('statuses/filter', params);
 
 stream.on('data', tweet => {
-  if (tweet.text || tweet.extended_tweet || tweet.retweeted_status) {
-    if (tweet.extended_tweet) {
-      text = tweet.extended_tweet.full_text;
-    } else {
-      if (tweet.retweeted_status) {
-        text = tweet.retweeted_status.text;
-      } else {
-        text = tweet.text;
-      }
-    }
-    let sentiment = analyze.getSentiment(text.trim().split(' '));
-    const newTweet = new Tweet({
-      text,
-      sentiment
-    });
-
-    newTweet.save();
-  }
+  const child = cp.fork('./process');
+  child.send(tweet);
+  child.on('exit', () => {
+    console.log('done');
+  });
 });
 
 stream.on('error', err => {
