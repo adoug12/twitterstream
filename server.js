@@ -28,7 +28,7 @@ app.post('/start', (req, res) => {
   stream = client.stream('statuses/filter', params);
 
   stream.on('data', tweet => {
-    axios.post('http://localhost:3001/tweet', tweet);
+    axios.post('http://13.75.193.101:3000/tweet', tweet);
   });
 
   stream.on('error', err => {

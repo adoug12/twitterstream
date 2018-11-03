@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
 
 app.post('/', (req, res) => {
   axios
-    .post('http://localhost:3000/start', req.body)
+    .post('http://13.75.209.231:3000/start', req.body)
     .then(data => {
       res.sendStatus(200);
     })
