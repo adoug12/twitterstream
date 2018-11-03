@@ -16,9 +16,11 @@ let stream = client.stream('statuses/filter', params);
 
 stream.on('data', tweet => {
   const child = cp.fork('./process');
+  count++;
   child.send(tweet);
   child.on('exit', () => {
-    console.log(count++);
+    count--;
+    console.log(count);
   });
 });
 
