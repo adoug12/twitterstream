@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
 
 app.post('/', (req, res) => {
   axios
-    .post('http://13.75.209.231:3000/start', req.body)
+    .post('http://localhost:3000/start', req.body)
     .then(data => {
       res.sendStatus(200);
     })
@@ -38,7 +38,17 @@ app.post('/tweet', (req, res) => {
       console.log(count);
     });
     res.sendStatus(200);
+  } else {
+    res.sendStatus(404);
   }
 });
 
-app.listen(3000, () => console.log('Server running on port 3000'));
+app.get('/healthcheck', (req, res) => {
+  if (count > 10) {
+    res.sendStatus(404);
+  } else {
+    res.sendStatus(200);
+  }
+});
+
+app.listen(3001, () => console.log('Server running on port 3001'));
