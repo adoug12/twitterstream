@@ -32,9 +32,15 @@ process.on('message', tweet => {
           sentiment
         });
 
-        newTweet.save().then(() => {
-          process.exit();
-        });
+        newTweet
+          .save()
+          .then(() => {
+            process.exit();
+          })
+          .catch(err => {
+            console.log('error saving');
+            process.exit();
+          });
       } else {
         console.log('got ehre 2');
         process.exit();

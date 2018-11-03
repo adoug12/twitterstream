@@ -9,7 +9,7 @@ let count = 0;
 
 const params = {
   language: 'en',
-  track: 'javascript,node,express'
+  track: 'javascript,node,express,python'
 };
 
 let stream = client.stream('statuses/filter', params);
