@@ -23,6 +23,7 @@ app.get('/stop', (req, res) => {
 });
 
 app.post('/start', (req, res) => {
+  if (stream) stream.destroy();
   params.track = req.body.words;
   console.log(params.track);
   stream = client.stream('statuses/filter', params);
