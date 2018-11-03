@@ -31,7 +31,7 @@ app.post('/start', (req, res) => {
   stream.on('data', tweet => {
     tweet.queryId = req.body.queryId;
     axios
-      .post('http://13.75.193.101:3000/tweet', tweet)
+      .post('http://20.40.124.179/tweet', tweet)
       .then(res => console.log(res.status))
       .catch(err => console.log('Failed to post tweet.'));
   });
