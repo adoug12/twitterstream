@@ -1,29 +1,14 @@
 const express = require('express');
 const twitter = require('twitter');
 const config = require('./config/twitter');
-const mongoose = require('mongoose');
-const db = require('./config/mlab').mongoURI;
 const cp = require('child_process');
-const analyzer = require('natural').SentimentAnalyzer;
-const stemmer = require('natural').PorterStemmer;
-const Tweet = require('./models/tweet');
-
-const analyze = new analyzer('English', stemmer, 'afinn');
 const client = new twitter(config);
 
 const app = express();
 
-mongoose
-  .connect(
-    db,
-    { useNewUrlParser: true }
-  )
-  .then(() => console.log('Connected to mLab'))
-  .catch(err => console.log(err));
-
 const params = {
   language: 'en',
-  track: 'trump'
+  track: 'javascript,node,express'
 };
 
 let stream = client.stream('statuses/filter', params);
