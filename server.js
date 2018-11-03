@@ -5,6 +5,7 @@ const cp = require('child_process');
 const client = new twitter(config);
 
 const app = express();
+let count = 0;
 
 const params = {
   language: 'en',
@@ -17,7 +18,7 @@ stream.on('data', tweet => {
   const child = cp.fork('./process');
   child.send(tweet);
   child.on('exit', () => {
-    console.log('done');
+    console.log(count++);
   });
 });
 
