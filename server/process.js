@@ -30,22 +30,28 @@ process.on('message', tweet => {
         Query.findById(tweet.queryId)
           .then(query => {
             query.sentiments.push(sentiment);
-            query.save().then(() => {
-              const newTweet = new Tweet({
-                text,
-                sentiment
-              });
-
-              newTweet
-                .save()
-                .then(() => {
-                  process.exit();
-                })
-                .catch(err => {
-                  console.log('error saving');
-                  process.exit();
+            query
+              .save()
+              .then(() => {
+                const newTweet = new Tweet({
+                  text,
+                  sentiment
                 });
-            });
+
+                newTweet
+                  .save()
+                  .then(() => {
+                    process.exit();
+                  })
+                  .catch(err => {
+                    console.log('error saving');
+                    process.exit();
+                  });
+              })
+              .catch(err => {
+                console.log(err);
+                process.exit();
+              });
           })
           .catch(err => {
             console.log(err);
