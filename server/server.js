@@ -74,6 +74,7 @@ app.post('/tweet', (req, res) => {
 
 const processTweets = tweets => {
   let i = 0;
+  console.log(children.length);
   console.log(!children.length > 15);
   while (!children.length > 15) {
     let j = children.length;
