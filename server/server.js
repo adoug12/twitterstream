@@ -24,6 +24,7 @@ mongoose
   .catch(err => console.log(err));
 
 let count = 0;
+let children = [];
 
 app.get('/', (req, res) => {
   Query.find()
@@ -72,6 +73,18 @@ app.post('/tweet', (req, res) => {
 });
 
 const processTweets = tweets => {
+  let i = 0;
+  while (!children.length > 15) {
+    let j = children.length;
+    children[j] = cp.fork('./process');
+    console.log('Started child', j);
+    children[j].send(tweets[i]);
+    children[j].on('exit', () => {
+      children.splice(j, 1);
+      console.log('Ended child', j);
+    });
+    i++;
+  }
   tweets.map(tweet => {
     if (count < 15) {
       const child = cp.fork('./process');
