@@ -78,12 +78,13 @@ const processTweets = tweets => {
   console.log(children.length < 15);
   while (children.length < 15 && tweets[i]) {
     let j = children.length;
-    children[j] = cp.fork('./process');
-    console.log('Started child', j);
-    children[j].send(tweets[i]);
-    children[j].on('exit', () => {
-      children.splice(j, 1);
-      console.log('Ended child', j);
+    let child = j;
+    children[child] = cp.fork('./process');
+    console.log('Started child', child);
+    children[child].send(tweets[i]);
+    children[child].on('exit', () => {
+      children.splice(child, 1);
+      console.log('Ended child', child);
     });
     i++;
   }
