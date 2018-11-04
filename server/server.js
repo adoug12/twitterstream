@@ -11,8 +11,8 @@ const app = express();
 app.set('view engine', 'pug');
 
 app.use(express.static('public'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({ limit: '50mb', extended: true }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 mongoose
   .connect(
@@ -39,7 +39,7 @@ app.post('/', (req, res) => {
   newQuery.save().then(query => {
     req.body.queryId = query._id;
     axios
-      .post('http://52.187.255.92:3000/start', req.body)
+      .post('http://localhost:3000/start', req.body)
       .then(data => {
         res.json(query._id);
       })
@@ -48,19 +48,19 @@ app.post('/', (req, res) => {
 });
 
 app.post('/tweet', (req, res) => {
-  const tweet = req.body;
-  if (count < 15) {
-    const child = cp.fork('./process');
-    count++;
-    child.send(tweet);
-    child.on('exit', () => {
-      count--;
-      console.log(count);
-    });
-    res.sendStatus(200);
-  } else {
-    res.sendStatus(404);
-  }
+  const tweets = req.body;
+  tweets.map(tweet => {
+    if (count < 15) {
+      const child = cp.fork('./process');
+      count++;
+      child.send(tweet);
+      child.on('exit', () => {
+        count--;
+        console.log(count);
+      });
+    }
+  });
+  res.sendStatus(200);
 });
 
 app.get('/healthcheck', (req, res) => {
@@ -73,4 +73,4 @@ app.get('/healthcheck', (req, res) => {
   }
 });
 
-app.listen(3000, () => console.log('Server running on port 3000'));
+app.listen(3001, () => console.log('Server running on port 3001'));

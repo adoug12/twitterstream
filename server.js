@@ -16,6 +16,7 @@ const params = {
 };
 
 let stream;
+let queue = [];
 
 app.get('/stop', (req, res) => {
   stream.destroy();
@@ -28,12 +29,19 @@ app.post('/start', (req, res) => {
   params.track = req.body.words;
   stream = client.stream('statuses/filter', params);
   console.log('Started streaming:', params.track);
+
   stream.on('data', tweet => {
     tweet.queryId = req.body.queryId;
-    axios
-      .post('http://40.82.219.50/tweet', tweet)
-      .then(res => console.log(res.status))
-      .catch(err => console.log('Failed to post tweet.'));
+    queue.push(tweet);
+    if (queue.length > 10) {
+      axios
+        .post('http://localhost:3001/tweet', queue)
+        .then(res => {
+          queue = [];
+          console.log(res.status);
+        })
+        .catch(err => console.log('Failed to post tweet.'));
+    }
   });
 
   stream.on('error', err => console.log(err));
