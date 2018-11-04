@@ -47,10 +47,16 @@ process.on('message', tweet => {
                 });
             });
           })
-          .catch(err => console.log(err));
+          .catch(err => {
+            console.log(err);
+            process.exit();
+          });
       } else {
         process.exit();
       }
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      process.exit();
+      console.log(err);
+    });
 });
