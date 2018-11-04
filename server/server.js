@@ -74,7 +74,7 @@ app.post('/tweet', (req, res) => {
 const processTweets = tweets => {
   console.log(count);
   tweets.map(tweet => {
-    if (count <= 15) {
+    if (count < 15) {
       let child = cp.fork('./process');
       count++;
       child.send(tweet);
