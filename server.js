@@ -35,7 +35,7 @@ app.post('/start', (req, res) => {
     queue.push(tweet);
     if (queue.length > 10) {
       axios
-        .post('http://52.187.229.172:3000/tweet', queue)
+        .post('http://40.82.218.27/tweet', queue)
         .then(res => {
           queue = [];
           console.log(res.status);
