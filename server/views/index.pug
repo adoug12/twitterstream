@@ -13,13 +13,15 @@ html
             .inner.cover
               h1.cover-heading Twitter Sentiment
               p.lead Enter the hashtags you with to analyze.
-              form#queryForm(action='javascript:submitQuery()', method='post')
+              form#queryForm
                 input.form-control.mb-4#words(type='text', name='words')
-                button.btn.btn-primary.mb-4(type='submit') Submit
-                p.lead#results Tweets Analyzed: 0
-                button.btn.btn-danger#red(disabled)
-                button.btn.btn-warning#yellow(disabled)
-                button.btn.btn-primary#blue(disabled)
-                button.btn.btn-success#green(disabled)
+              button.btn.btn-primary.mb-4#mainButton(type='button', onclick='submitQuery()') Submit
+              div#results
+                if latestQuery
+                  h4 Latest Search
+                  p #{latestQuery.hashtags}
+                if unhappyTweet
+                  h4 Most Negative Recent Tweet
+                  p "#{unhappyTweet.text}"
   script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js')
   script(src='js/feed.js')

@@ -1,10 +1,11 @@
 const express = require('express');
-const cp = require('child_process');
-const Query = require('./models/query');
-const mongoose = require('mongoose');
-const db = require('./config/mlab').mongoURI;
 const axios = require('axios');
 const bodyParser = require('body-parser');
+const cp = require('child_process');
+const mongoose = require('mongoose');
+const db = require('./config/mlab').mongoURI;
+const Query = require('./models/query');
+const Tweet = require('./models/tweet');
 
 const app = express();
 
@@ -24,7 +25,22 @@ mongoose
 
 let count = 0;
 
-app.get('/', (req, res) => res.render('index'));
+app.get('/', (req, res) => {
+  Query.find()
+    .sort('-createdAt')
+    .then(queries => {
+      Tweet.find()
+        .sort('sentiment')
+        .then(tweets => {
+          res.render('index', {
+            latestQuery: queries[0],
+            unhappyTweet: tweets[0]
+          });
+        })
+        .catch(err => res.render('index'));
+    })
+    .catch(err => res.render('index'));
+});
 
 app.get('/status', (req, res) => {
   Query.findById(req.query.id)
@@ -43,7 +59,10 @@ app.post('/', (req, res) => {
       .then(data => {
         res.json(query._id);
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        res.sendStatus(404);
+        console.log(err);
+      });
   });
 });
 
@@ -61,6 +80,17 @@ app.post('/tweet', (req, res) => {
     }
   });
   res.sendStatus(200);
+});
+
+app.get('/stop', (req, res) => {
+  axios
+    .get('http://52.187.246.217:3000/stop')
+    .then(data => {
+      res.sendStatus(200);
+    })
+    .catch(err => {
+      res.sendStatus(404);
+    });
 });
 
 app.get('/healthcheck', (req, res) => {

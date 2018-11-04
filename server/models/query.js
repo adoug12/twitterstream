@@ -10,6 +10,11 @@ const QuerySchema = new Schema({
     type: [Number],
     required: true,
     default: []
+  },
+  createdAt: {
+    type: Date,
+    required: true,
+    default: Date.now
   }
 });
 
