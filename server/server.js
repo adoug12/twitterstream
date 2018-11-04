@@ -76,7 +76,7 @@ const processTweets = tweets => {
   let i = 0;
   console.log(children.length);
   console.log(children.length < 15);
-  while (children.length < 15) {
+  while (children.length < 15 && tweets[i]) {
     let j = children.length;
     children[j] = cp.fork('./process');
     console.log('Started child', j);
