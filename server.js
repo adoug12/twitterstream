@@ -32,6 +32,7 @@ app.post('/start', (req, res) => {
 
   stream.on('data', tweet => {
     tweet.queryId = req.body.queryId;
+    if (queue.length > 100) queue = [];
     queue.push(tweet);
     if (queue.length > 10) {
       axios
