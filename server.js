@@ -20,6 +20,7 @@ let queue = [];
 
 app.get('/stop', (req, res) => {
   stream.destroy();
+  queue = [];
   console.log('Stopped');
   res.sendStatus(200);
 });
