@@ -74,6 +74,7 @@ app.post('/tweet', (req, res) => {
 
 const processTweets = tweets => {
   let i = 0;
+  console.log(!children.length > 15);
   while (!children.length > 15) {
     let j = children.length;
     children[j] = cp.fork('./process');
@@ -85,17 +86,6 @@ const processTweets = tweets => {
     });
     i++;
   }
-  tweets.map(tweet => {
-    if (count < 15) {
-      const child = cp.fork('./process');
-      count++;
-      child.send(tweet);
-      child.on('exit', () => {
-        count--;
-        console.log(count);
-      });
-    }
-  });
 };
 
 app.get('/stop', (req, res) => {
