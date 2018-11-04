@@ -55,7 +55,7 @@ app.post('/', (req, res) => {
   newQuery.save().then(query => {
     req.body.queryId = query._id;
     axios
-      .post('http://localhost:3000/start', req.body)
+      .post('http://104.210.65.232:3000/start', req.body)
       .then(data => {
         res.json(query._id);
       })
@@ -87,7 +87,7 @@ const processTweets = tweets => {
 
 app.get('/stop', (req, res) => {
   axios
-    .get('http://localhost:3000/stop')
+    .get('http://104.210.65.232:3000/stop')
     .then(data => {
       res.sendStatus(200);
     })
@@ -106,4 +106,4 @@ app.get('/healthcheck', (req, res) => {
   }
 });
 
-app.listen(3001, () => console.log('Server running on port 3001'));
+app.listen(3000, () => console.log('Server running on port 3000'));
